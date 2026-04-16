@@ -1,15 +1,8 @@
-# spotify-hit-song-analysis
 # Predicting the Next Hit
 Music Streaming · Content Performance Analysis
 
 ## Overview
-This project analyzes Spotify's top songs of 2023 to identify which variables are most strongly associated with streaming performance.
-
-## Objective
-For a record label, identifying factors associated with a song's streaming success can inform smarter investment and production decisions.
-
-## Dataset
-Top Spotify Songs 2023 (Kaggle): https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023
+Analyzed Spotify’s top songs of 2023 to identify factors associated with streaming success and inform data-driven music investment decisions.
 
 ## Methods
 - Exploratory Data Analysis
@@ -17,20 +10,26 @@ Top Spotify Songs 2023 (Kaggle): https://www.kaggle.com/datasets/nelgiriyewithan
 - Multiple Linear Regression
 - K-Means Clustering
 - PCA
-- Data Visualization
 
 ## Key Findings
-- Playlist placement was the strongest measurable predictor of streams
-- Audio features were common among top artists but did not predict stream performance across the full dataset
-- Release season was significantly associated with performance tier, with top-performing songs more concentrated in winter
+- Playlist placement was the strongest predictor of streams
+- Audio features did not significantly predict performance across songs
+- Release timing was associated with performance differences
 
 ## Tech Stack
-Python, Pandas, Statsmodels, SciPy, Scikit-learn, Matplotlib, Seaborn
+Python · Pandas · Statsmodels · SciPy · Scikit-learn · Matplotlib · Seaborn
 
 ## Files
-- `spotify_hit_analysis.py` — main analysis script
-- `spotify-2023-2.csv` — dataset
-- `plots/` — exported charts
+- spotify_hit_analysis.py — main analysis script
+- requirements.txt — project dependencies
 
-## Notes
-This repository contains a cleaned and reproducible version of the project workflow for portfolio purposes.
+## Plots
+- streams_distribution.png
+- playlist_vs_streams.png
+- audio_features_correlation.png
+- cluster_segments.png
+- season_vs_performance.png
+
+## How to Run
+pip install -r requirements.txt  
+python spotify_hit_analysis.py
