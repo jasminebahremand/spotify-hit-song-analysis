@@ -24,6 +24,8 @@ warnings.filterwarnings("ignore")
 DATA_PATH = "spotify-2023-2.csv"
 PLOTS_DIR = "plots"
 
+CLUSTER_NAMES = {0: "Less-known", 1: "Phenomenal", 2: "Well-known", 3: "Normal"}
+
 sns.set_theme(style="whitegrid")
 plt.rcParams["figure.figsize"] = (10, 6)
 
@@ -110,7 +112,7 @@ def analyze_audio_features(df: pd.DataFrame) -> None:
 
     plt.figure()
     sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
-    plt.title("Audio Features Correlation")
+    plt.title("Audio Features Correlation with Streams")
     save_plot("audio_features_correlation.png")
 
 
@@ -128,6 +130,20 @@ def analyze_artist_tiers(df: pd.DataFrame) -> None:
     print("\nTop vs Non-Top Artists")
     print(f"T-statistic: {t_stat:.4f}")
     print(f"P-value: {p_val:.6g}")
+    print(f"Top 10 avg streams: {top_10.mean():,.0f}")
+    print(f"Non-top avg streams: {rest.mean():,.0f}")
+
+    # Visualize artist tier comparison
+    avg_streams = pd.DataFrame({
+        "Group": ["Top 10 Artists", "Non-Top 10 Artists"],
+        "Avg Streams": [top_10.mean(), rest.mean()]
+    })
+
+    plt.figure()
+    sns.barplot(data=avg_streams, x="Group", y="Avg Streams", palette="Blues_d")
+    plt.title("Average Streams: Top 10 vs Non-Top 10 Artists")
+    plt.ylabel("Average Total Streams")
+    save_plot("artist_tier_comparison.png")
 
 
 # -----------------------------
@@ -144,18 +160,25 @@ def run_playlist_regression(df: pd.DataFrame):
     X = scaler_x.fit_transform(model_df[x_cols])
     y = scaler_y.fit_transform(model_df[["streams"]]).flatten()
 
-    X = sm.add_constant(X)
-    model = sm.OLS(y, X).fit()
+    # Use named columns for readable regression output
+    X_df = pd.DataFrame(X, columns=x_cols)
+    X_df = sm.add_constant(X_df)
 
-    print("\nRegression Summary")
+    model = sm.OLS(y, X_df).fit()
+
+    print("\nPlaylist Regression Summary")
     print(model.summary())
 
-    preds = model.predict(X)
+    print("\nKey coefficients (normalized):")
+    for name, coef in zip(X_df.columns, model.params):
+        print(f"  {name}: {coef:.4f}")
+
+    preds = model.predict(X_df)
 
     plt.figure()
     plt.scatter(y, preds, alpha=0.6)
     plt.plot([y.min(), y.max()], [y.min(), y.max()], linestyle="--")
-    plt.title("Playlist vs Streams")
+    plt.title("Actual vs Predicted Normalized Streams (Playlist Model)")
     plt.xlabel("Actual Normalized Streams")
     plt.ylabel("Predicted Normalized Streams")
     save_plot("playlist_vs_streams.png")
@@ -171,38 +194,45 @@ def analyze_seasonality(df: pd.DataFrame) -> None:
         "in_spotify_playlists", "in_apple_playlists", "in_deezer_playlists", "streams"
     ] if c in df.columns]
 
-    cluster_df = df[features + ["released_month"]].dropna()
+    cluster_df = df[features + ["released_month"]].dropna().copy()
 
     scaler = StandardScaler()
     scaled = scaler.fit_transform(cluster_df[features])
 
     kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
     cluster_df["cluster"] = kmeans.fit_predict(scaled)
+    cluster_df["cluster_name"] = cluster_df["cluster"].map(CLUSTER_NAMES)
 
     pca = PCA(n_components=2)
     pca_data = pca.fit_transform(scaled)
 
     plt.figure()
-    plt.scatter(pca_data[:, 0], pca_data[:, 1], c=cluster_df["cluster"])
-    plt.title("Cluster Segments")
+    scatter = plt.scatter(pca_data[:, 0], pca_data[:, 1], c=cluster_df["cluster"], cmap="viridis")
+    plt.colorbar(scatter, label="Cluster")
+    plt.title("Song Performance Clusters (PCA)")
     plt.xlabel("PCA Component 1")
     plt.ylabel("PCA Component 2")
     save_plot("cluster_segments.png")
 
     cluster_df["season"] = cluster_df["released_month"].apply(get_season)
 
-    table = pd.crosstab(cluster_df["season"], cluster_df["cluster"])
+    table = pd.crosstab(cluster_df["season"], cluster_df["cluster_name"])
     chi2, p, _, _ = chi2_contingency(table)
 
     print("\nSeason vs Cluster")
     print(f"Chi-square: {chi2:.4f}, p-value: {p:.6g}")
+    print(table)
+
+    season_order = ["Spring", "Summer", "Autumn", "Winter"]
+    table = table.reindex(season_order)
 
     pct = table.div(table.sum(axis=1), axis=0)
 
-    pct.plot(kind="bar", stacked=True)
-    plt.title("Season vs Performance")
+    pct.plot(kind="bar", stacked=True, colormap="viridis")
+    plt.title("Season vs Performance Tier Distribution")
     plt.xlabel("Season")
     plt.ylabel("Proportion")
+    plt.legend(title="Performance Tier", bbox_to_anchor=(1.05, 1), loc="upper left")
     save_plot("season_vs_performance.png")
 
 
