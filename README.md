@@ -9,7 +9,7 @@ This project analyzes Spotify's top songs of 2023 to identify which variables ar
 For a record label, identifying factors associated with a song's streaming success can inform smarter investment and production decisions.
 
 ## Dataset
-Top Spotify Songs 2023 (Kaggle)
+Top Spotify Songs 2023 (Kaggle): https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023
 
 ## Methods
 - Exploratory Data Analysis
