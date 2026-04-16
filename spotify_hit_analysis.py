@@ -14,7 +14,6 @@ import statsmodels.api as sm
 from scipy.stats import chi2_contingency, ttest_ind
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
-from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import StandardScaler
 
 warnings.filterwarnings("ignore")
@@ -89,6 +88,8 @@ def plot_streams_distribution(df: pd.DataFrame) -> None:
     plt.figure()
     sns.histplot(df["streams"], bins=40)
     plt.title("Distribution of Streams")
+    plt.xlabel("Streams")
+    plt.ylabel("Frequency")
     save_plot("streams_distribution.png")
 
 
@@ -155,6 +156,8 @@ def run_playlist_regression(df: pd.DataFrame):
     plt.scatter(y, preds, alpha=0.6)
     plt.plot([y.min(), y.max()], [y.min(), y.max()], linestyle="--")
     plt.title("Playlist vs Streams")
+    plt.xlabel("Actual Normalized Streams")
+    plt.ylabel("Predicted Normalized Streams")
     save_plot("playlist_vs_streams.png")
 
     return model
@@ -163,7 +166,7 @@ def run_playlist_regression(df: pd.DataFrame):
 # -----------------------------
 # 5. Clustering + seasonality
 # -----------------------------
-def analyze_seasonality(df: pd.DataFrame):
+def analyze_seasonality(df: pd.DataFrame) -> None:
     features = [c for c in [
         "in_spotify_playlists", "in_apple_playlists", "in_deezer_playlists", "streams"
     ] if c in df.columns]
@@ -182,6 +185,8 @@ def analyze_seasonality(df: pd.DataFrame):
     plt.figure()
     plt.scatter(pca_data[:, 0], pca_data[:, 1], c=cluster_df["cluster"])
     plt.title("Cluster Segments")
+    plt.xlabel("PCA Component 1")
+    plt.ylabel("PCA Component 2")
     save_plot("cluster_segments.png")
 
     cluster_df["season"] = cluster_df["released_month"].apply(get_season)
@@ -196,6 +201,8 @@ def analyze_seasonality(df: pd.DataFrame):
 
     pct.plot(kind="bar", stacked=True)
     plt.title("Season vs Performance")
+    plt.xlabel("Season")
+    plt.ylabel("Proportion")
     save_plot("season_vs_performance.png")
 
 
