@@ -33,14 +33,12 @@ plt.rcParams["figure.figsize"] = (10, 6)
 # Helpers
 # -----------------------------
 def save_plot(filename: str) -> None:
-    """Save the current matplotlib figure to the plots folder."""
     plt.tight_layout()
     plt.savefig(os.path.join(PLOTS_DIR, filename), dpi=300, bbox_inches="tight")
     plt.close()
 
 
 def get_season(month: int) -> str:
-    """Map release month to season."""
     if month in [12, 1, 2]:
         return "Winter"
     if month in [3, 4, 5]:
@@ -51,33 +49,19 @@ def get_season(month: int) -> str:
 
 
 # -----------------------------
-# Load and clean data
+# Load data
 # -----------------------------
 def load_data(path: str) -> pd.DataFrame:
-    """Load dataset and clean key fields."""
     df = pd.read_csv(path, encoding="latin-1")
 
     numeric_cols = [
-        "streams",
-        "artist_count",
-        "released_year",
-        "released_month",
-        "released_day",
-        "in_spotify_playlists",
-        "in_spotify_charts",
-        "in_apple_playlists",
-        "in_apple_charts",
-        "in_deezer_playlists",
-        "in_deezer_charts",
-        "in_shazam_charts",
-        "bpm",
-        "danceability_%",
-        "valence_%",
-        "energy_%",
-        "acousticness_%",
-        "instrumentalness_%",
-        "liveness_%",
-        "speechiness_%",
+        "streams", "artist_count", "released_year", "released_month", "released_day",
+        "in_spotify_playlists", "in_spotify_charts",
+        "in_apple_playlists", "in_apple_charts",
+        "in_deezer_playlists", "in_deezer_charts",
+        "in_shazam_charts", "bpm", "danceability_%", "valence_%",
+        "energy_%", "acousticness_%", "instrumentalness_%",
+        "liveness_%", "speechiness_%"
     ]
 
     for col in numeric_cols:
@@ -91,8 +75,8 @@ def load_data(path: str) -> pd.DataFrame:
     if "in_shazam_charts" in df.columns:
         df["in_shazam_charts"] = df["in_shazam_charts"].fillna(0)
 
-    required_cols = ["track_name", "artist(s)_name", "streams", "released_year", "released_month"]
-    required_cols = [col for col in required_cols if col in df.columns]
+    required_cols = ["track_name", "artist(s)_name", "streams", "released_month"]
+    required_cols = [c for c in required_cols if c in df.columns]
     df = df.dropna(subset=required_cols).copy()
 
     return df
@@ -102,241 +86,123 @@ def load_data(path: str) -> pd.DataFrame:
 # 1. Streams distribution
 # -----------------------------
 def plot_streams_distribution(df: pd.DataFrame) -> None:
-    """Plot overall distribution of song streams."""
-    plt.figure(figsize=(10, 6))
+    plt.figure()
     sns.histplot(df["streams"], bins=40)
     plt.title("Distribution of Streams")
-    plt.xlabel("Streams")
-    plt.ylabel("Frequency")
     save_plot("streams_distribution.png")
 
 
 # -----------------------------
-# 2. Audio features vs streams
+# 2. Audio features correlation
 # -----------------------------
-def analyze_audio_features(df: pd.DataFrame) -> pd.DataFrame:
-    """Create correlation heatmap for audio features and streams."""
-    feature_cols = [
-        "bpm",
-        "danceability_%",
-        "valence_%",
-        "energy_%",
-        "acousticness_%",
-        "instrumentalness_%",
-        "liveness_%",
-        "speechiness_%",
+def analyze_audio_features(df: pd.DataFrame) -> None:
+    features = [
+        "bpm", "danceability_%", "valence_%", "energy_%",
+        "acousticness_%", "instrumentalness_%", "liveness_%", "speechiness_%"
     ]
-    feature_cols = [col for col in feature_cols if col in df.columns]
+    features = [c for c in features if c in df.columns]
 
-    corr_df = df[feature_cols + ["streams"]].corr(numeric_only=True)
+    corr = df[features + ["streams"]].corr(numeric_only=True)
 
     print("\nCorrelation with streams:")
-    print(corr_df["streams"].sort_values(ascending=False))
+    print(corr["streams"].sort_values(ascending=False))
 
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(corr_df, annot=True, cmap="coolwarm", fmt=".2f")
-    plt.title("Audio Features Correlation Heatmap")
+    plt.figure()
+    sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
+    plt.title("Audio Features Correlation")
     save_plot("audio_features_correlation.png")
-
-    return corr_df
 
 
 # -----------------------------
 # 3. Artist-tier comparison
 # -----------------------------
-def analyze_artist_tiers(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Compare top 10 artists vs non-top 10 artists on average audio features.
-    This supports the insight that top artists tend to have different feature profiles.
-    """
-    artist_streams = (
-        df.groupby("artist(s)_name")["streams"]
-        .sum()
-        .sort_values(ascending=False)
-    )
+def analyze_artist_tiers(df: pd.DataFrame) -> None:
+    artist_streams = df.groupby("artist(s)_name")["streams"].sum().sort_values(ascending=False)
 
-    top_10_artists = artist_streams.head(10)
-    non_top_10_artists = artist_streams.iloc[10:]
+    top_10 = artist_streams.head(10)
+    rest = artist_streams.iloc[10:]
 
-    t_stat, p_val = ttest_ind(
-        top_10_artists.values,
-        non_top_10_artists.values,
-        equal_var=False,
-        nan_policy="omit",
-    )
+    t_stat, p_val = ttest_ind(top_10.values, rest.values, equal_var=False)
 
-    print("\nTop 10 vs non-top 10 artist total streams:")
+    print("\nTop vs Non-Top Artists")
     print(f"T-statistic: {t_stat:.4f}")
     print(f"P-value: {p_val:.6g}")
-
-    df = df.copy()
-    top_10_names = set(top_10_artists.index)
-
-    df["artist_group"] = np.where(
-        df["artist(s)_name"].isin(top_10_names),
-        "Top 10 Artists",
-        "Non-Top 10 Artists",
-    )
-
-    audio_features = [
-        "danceability_%",
-        "energy_%",
-        "acousticness_%",
-        "valence_%",
-        "speechiness_%",
-    ]
-    audio_features = [col for col in audio_features if col in df.columns]
-
-    summary = df.groupby("artist_group")[audio_features].mean().T
-
-    print("\nAverage audio features by artist group:")
-    print(summary)
-
-    return summary
 
 
 # -----------------------------
 # 4. Playlist regression
 # -----------------------------
 def run_playlist_regression(df: pd.DataFrame):
-    """
-    Model how playlist placements relate to streams.
-    Outputs a plot of actual vs predicted normalized streams.
-    """
-    x_cols = [
-        col for col in ["in_spotify_playlists", "in_apple_playlists", "in_deezer_playlists"]
-        if col in df.columns
-    ]
-    y_col = "streams"
+    x_cols = [c for c in ["in_spotify_playlists", "in_apple_playlists", "in_deezer_playlists"] if c in df.columns]
 
-    model_df = df[x_cols + [y_col]].dropna().copy()
+    model_df = df[x_cols + ["streams"]].dropna()
 
-    x_scaler = StandardScaler()
-    y_scaler = StandardScaler()
+    scaler_x = StandardScaler()
+    scaler_y = StandardScaler()
 
-    X_scaled = pd.DataFrame(
-        x_scaler.fit_transform(model_df[x_cols]),
-        columns=x_cols,
-        index=model_df.index,
-    )
+    X = scaler_x.fit_transform(model_df[x_cols])
+    y = scaler_y.fit_transform(model_df[["streams"]]).flatten()
 
-    y_scaled = pd.Series(
-        y_scaler.fit_transform(model_df[[y_col]]).flatten(),
-        index=model_df.index,
-        name="streams_scaled",
-    )
+    X = sm.add_constant(X)
+    model = sm.OLS(y, X).fit()
 
-    X_const = sm.add_constant(X_scaled)
-    model = sm.OLS(y_scaled, X_const).fit()
-
-    print("\nPlaylist regression summary:")
+    print("\nRegression Summary")
     print(model.summary())
 
-    predictions = model.predict(X_const)
+    preds = model.predict(X)
 
-    plt.figure(figsize=(8, 6))
-    plt.scatter(y_scaled, predictions, alpha=0.6)
-    plt.plot(
-        [y_scaled.min(), y_scaled.max()],
-        [y_scaled.min(), y_scaled.max()],
-        linestyle="--",
-        color="red",
-    )
-    plt.xlabel("Actual Normalized Streams")
-    plt.ylabel("Predicted Normalized Streams")
-    plt.title("Playlist Regression: Actual vs Predicted Streams")
+    plt.figure()
+    plt.scatter(y, preds, alpha=0.6)
+    plt.plot([y.min(), y.max()], [y.min(), y.max()], linestyle="--")
+    plt.title("Playlist vs Streams")
     save_plot("playlist_vs_streams.png")
 
     return model
 
 
 # -----------------------------
-# 5. Clustering and seasonality
+# 5. Clustering + seasonality
 # -----------------------------
-def analyze_seasonality(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Cluster songs into performance groups and test whether season
-    is associated with performance tier.
-    """
-    cluster_features = [
-        col for col in [
-            "in_spotify_playlists",
-            "in_apple_playlists",
-            "in_deezer_playlists",
-            "streams",
-        ]
-        if col in df.columns
-    ]
+def analyze_seasonality(df: pd.DataFrame):
+    features = [c for c in [
+        "in_spotify_playlists", "in_apple_playlists", "in_deezer_playlists", "streams"
+    ] if c in df.columns]
 
-    cluster_df = df[cluster_features + ["released_month"]].dropna().copy()
+    cluster_df = df[features + ["released_month"]].dropna()
 
     scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(cluster_df[cluster_features])
+    scaled = scaler.fit_transform(cluster_df[features])
 
     kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
-    cluster_labels = kmeans.fit_predict(scaled_features)
-    cluster_df["Cluster"] = cluster_labels
+    cluster_df["cluster"] = kmeans.fit_predict(scaled)
 
-    # PCA plot for visualizing clusters
     pca = PCA(n_components=2)
-    pca_features = pca.fit_transform(scaled_features)
+    pca_data = pca.fit_transform(scaled)
 
-    plt.figure(figsize=(8, 6))
-    plt.scatter(pca_features[:, 0], pca_features[:, 1], c=cluster_labels, alpha=0.7)
-    plt.title("K-Means Cluster Segments")
-    plt.xlabel("PCA Component 1")
-    plt.ylabel("PCA Component 2")
-    plt.colorbar(label="Cluster")
+    plt.figure()
+    plt.scatter(pca_data[:, 0], pca_data[:, 1], c=cluster_df["cluster"])
+    plt.title("Cluster Segments")
     save_plot("cluster_segments.png")
 
-    silhouette = silhouette_score(scaled_features, cluster_labels)
-    print(f"\nSilhouette score: {silhouette:.3f}")
+    cluster_df["season"] = cluster_df["released_month"].apply(get_season)
 
-    cluster_summary = cluster_df.groupby("Cluster")[cluster_features].mean()
-    print("\nCluster summary:")
-    print(cluster_summary)
+    table = pd.crosstab(cluster_df["season"], cluster_df["cluster"])
+    chi2, p, _, _ = chi2_contingency(table)
 
-    # Label clusters by average stream performance
-    stream_rank = cluster_summary["streams"].sort_values().index.tolist()
-    cluster_name_map = {
-        stream_rank[0]: "Less-known",
-        stream_rank[1]: "Normal",
-        stream_rank[2]: "Well-known",
-        stream_rank[3]: "Phenomenal",
-    }
+    print("\nSeason vs Cluster")
+    print(f"Chi-square: {chi2:.4f}, p-value: {p:.6g}")
 
-    cluster_df["Cluster_Name"] = cluster_df["Cluster"].map(cluster_name_map)
-    cluster_df["Season"] = cluster_df["released_month"].apply(get_season)
+    pct = table.div(table.sum(axis=1), axis=0)
 
-    season_table = pd.crosstab(cluster_df["Season"], cluster_df["Cluster_Name"])
-    season_order = ["Spring", "Summer", "Autumn", "Winter"]
-    season_table = season_table.reindex(season_order)
-
-    print("\nSeason x performance tier:")
-    print(season_table)
-
-    chi2, p_val, dof, expected = chi2_contingency(season_table)
-    print("\nChi-square test: season vs performance tier")
-    print(f"Chi-square statistic: {chi2:.4f}")
-    print(f"P-value: {p_val:.6g}")
-
-    season_pct = season_table.div(season_table.sum(axis=1), axis=0) * 100
-
-    season_pct.plot(kind="bar", stacked=True, colormap="viridis", figsize=(10, 6))
-    plt.title("Season vs Performance Tier")
-    plt.xlabel("Season")
-    plt.ylabel("Percentage")
-    plt.xticks(rotation=0)
-    plt.legend(title="Cluster", bbox_to_anchor=(1.05, 1), loc="upper left")
+    pct.plot(kind="bar", stacked=True)
+    plt.title("Season vs Performance")
     save_plot("season_vs_performance.png")
 
-    return cluster_df
-
 
 # -----------------------------
-# Main
+# Run analysis
 # -----------------------------
-def main() -> None:
+def main():
     os.makedirs(PLOTS_DIR, exist_ok=True)
 
     df = load_data(DATA_PATH)
@@ -348,7 +214,7 @@ def main() -> None:
     run_playlist_regression(df)
     analyze_seasonality(df)
 
-    print(f"\nAnalysis complete. Plots saved to: {PLOTS_DIR}")
+    print("\nDone. Plots saved to:", PLOTS_DIR)
 
 
 if __name__ == "__main__":
