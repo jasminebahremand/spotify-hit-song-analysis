@@ -4,7 +4,7 @@
 ## Overview
 Analyzed Spotify's top songs of 2023 to identify factors most strongly associated with streaming success and inform data-driven music investment and release decisions.
 
-> Full write-up available at [portfolio URL]
+> Full write-up available at [portfolio URL] (coming soon)
 
 ## Methods
 - Exploratory Data Analysis
@@ -27,26 +27,27 @@ Python · Pandas · Statsmodels · SciPy · Scikit-learn · Matplotlib · Seabor
 
 ## Key Visual Insights
 
+## Key Visual Insights
+
 ### Distribution of Streams
-![Streams Distribution](plots/streams_distribution_top_vs_non_top.jpg)
-Top artists exhibit higher median streams and greater variability, with success driven by a small number of highly viral tracks.
+![Distribution of Streams](plots/distribution_of_streams.jpg)
+Top 10 artists show higher median streams but also far greater variability — success is driven by a small number of viral outliers, not consistent output.
 
 ### Playlist Impact on Streams
-![Playlist Regression](plots/playlist_impact_regression.jpg)
-Streaming performance increases with playlist placements, with Spotify playlists showing the strongest influence.
+![Playlist Impact](plots/playlist_impact_on_streams.jpg)
+Streaming performance scales with playlist placements across all three platforms. Spotify placements had the strongest effect (β=0.4975) — more than 4x the influence of Deezer (β=0.12), making Spotify editorial placement the single highest-leverage distribution channel.
 
 ### Actual vs Predicted Streams
 ![Actual vs Predicted](plots/actual_vs_predicted_streams.jpg)
-Model predictions closely track actual values, indicating strong predictive performance with some variance in high-stream outliers.
+Model predictions closely track actual values (R²=0.727), with most variance concentrated in high-stream outliers — suggesting viral breakouts follow patterns the model doesn't fully capture.
 
 ### Track Clustering by Performance
-![Clustering](plots/kmeans_playlist_clustering.jpg)
-Tracks cluster into distinct performance tiers based on playlist exposure, separating low-visibility tracks from high-performing hits.
+![Track Clustering](plots/track_clustering_by_performance.jpg)
+K-means clustering separates tracks into four distinct tiers based on playlist exposure. The majority of tracks fall in the low-visibility cluster, with a small group of well-known and phenomenal performers pulling far ahead.
 
 ### Performance by Release Season
-![Season Distribution](plots/cluster_distribution_by_season.jpg)
-Higher-performing tracks are more concentrated in certain seasons, supporting the role of release timing in success.
-
+![Release Season](plots/performance_by_release_season.jpg)
+Well-known and phenomenal tracks are more concentrated in autumn and winter releases (χ²=27.92, p=.001), suggesting release timing meaningfully affects a track's chance of breaking through.
 ## How to Run
 ```bash
 pip install -r requirements.txt
