@@ -24,6 +24,11 @@ The practical takeaway: getting on the right playlists matters more than what th
 
 ## Key Visuals
 
+### Most Songs Receive Moderate Streaming Attention
+![Streams Distribution](plots/streams_distribution.png)
+
+Even among Spotify's top songs of 2023, most cluster in a moderate performance range — a small number break far ahead.
+
 ### Spotify Playlists Have the Strongest Impact on Streams
 ![Playlist Impact](plots/playlist_impact_comparison.png)
 
@@ -55,7 +60,7 @@ Predicted values track actual streams closely across most of the range — songs
 Top artists trend higher on both features, but the gap is small and these traits don't predict success across the full dataset.
 
 ### Audio Features Have Near-Zero Correlation with Streams
-![Audio Correlation](plots/stream_correlations.png)
+![Stream Correlations](plots/stream_correlations.png)
 
 None of the audio features meaningfully predict stream count — what a song sounds like is not what makes it perform well.
 
