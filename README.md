@@ -14,8 +14,8 @@ This project analyzes Spotify's top songs of 2023 to identify what actually pred
 
 ## Key Findings
 - **Playlist placement explained 72.7% of variance in streams (R²=0.727)** — distribution is the lever, not the music itself
-- **Spotify placements had the largest effect** (β=0.4975) vs Apple Music (β=0.37) and Deezer (β=0.12) — Spotify editorial is the single highest-leverage channel
-- **Top artists consistently scored higher on danceability and energy** — but these features showed little to no predictive power across the full dataset (r=−0.10 for danceability)
+- **Spotify placements had the largest effect** vs Apple Music and Deezer — Spotify editorial is the single highest-leverage channel
+- **Top artists show slightly higher danceability and energy** — but these features showed little to no predictive power across the full dataset
 - **Release season is significantly associated with performance tier** — top-performing songs were more concentrated in winter releases (χ²=27.92, p=.001)
 
 The practical takeaway: getting on the right playlists matters more than what the song sounds like.
@@ -27,37 +27,37 @@ The practical takeaway: getting on the right playlists matters more than what th
 ### Spotify Playlists Have the Strongest Impact on Streams
 ![Playlist Impact](plots/playlist_impact_comparison.png)
 
-Spotify placements drive nearly twice the streaming impact of Apple Music, and Deezer shows a negative relationship — making Spotify editorial placement the clearest lever a label can pull.
+Spotify editorial placement is the single highest-leverage distribution channel — Deezer shows no positive relationship with streams.
 
 ### Songs Group into Distinct Performance Tiers by Playlist Exposure
 ![Clustering](plots/playlist_clustering.png)
 
-K-means clustering separates tracks into four tiers based on playlist presence and stream volume. The majority cluster at low visibility — a small number break far ahead.
+K-means clustering separates tracks into four tiers — Low Visibility, Breaking Through, Well Known, and Phenomenal — based on playlist presence and stream volume.
 
-### Top Artists Score Higher on Danceability and Energy
-![Audio Features](plots/artist_tier_audio_features.png)
+### Four Distinct Song Performance Groups Confirmed
+![PCA](plots/pca_clusters.png)
 
-Top artists outperform on both audio features, but the difference is small and these features don't predict success across the broader dataset — they're a trait of already-successful artists, not a cause.
+PCA reduces 4 variables to 2 dimensions to confirm the clusters are genuinely distinct and not an artifact of the algorithm.
 
 ### Song Performance Mix Changes Across Release Seasons
 ![Seasonal Performance](plots/seasonal_performance_distribution.png)
 
-Winter releases show the highest concentration of top-tier performers — fall and winter together account for a disproportionate share of breakout songs.
+Winter releases show the highest share of top-tier songs — release timing meaningfully affects a track's chance of breaking through.
 
-### Model Captures Overall Streaming Trends
+### Model Captures Overall Streaming Trends (R²=0.727)
 ![Actual vs Predicted](plots/actual_vs_predicted_streams.png)
 
-Predicted values track actual streams closely across most of the range, with the largest variance at the extreme high end — viral outliers follow patterns the model doesn't fully capture.
+Predicted values track actual streams closely across most of the range — songs above the line outperformed what their playlist presence would predict.
 
-### Audio Features Show Weak Relationship with Streaming Performance
-![Audio Correlation](plots/audio_feature_correlation.png)
+### Top Artists Show Slightly Higher Danceability and Energy
+![Audio Features](plots/artist_tier_audio_features.png)
 
-All audio features show near-zero correlation with streams, confirming that sonic characteristics alone don't explain why songs perform well.
+Top artists trend higher on both features, but the gap is small and these traits don't predict success across the full dataset.
 
-### Clusters Show Clear Separation in Reduced Feature Space
-![PCA](plots/pca_clusters.png)
+### Audio Features Have Near-Zero Correlation with Streams
+![Audio Correlation](plots/stream_correlations.png)
 
-PCA visualization confirms the four clusters are genuinely distinct — not an artifact of the algorithm.
+None of the audio features meaningfully predict stream count — what a song sounds like is not what makes it perform well.
 
 ---
 
@@ -67,7 +67,7 @@ PCA visualization confirms the four clusters are genuinely distinct — not an a
 - T-tests comparing top vs non-top artist audio feature scores
 - Chi-square test for release season vs performance tier
 - K-Means Clustering (k=4) on playlist presence and stream volume
-- PCA for cluster visualization in reduced feature space
+- PCA for cluster validation in reduced feature space
 
 ---
 
