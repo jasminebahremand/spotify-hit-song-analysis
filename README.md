@@ -27,20 +27,37 @@ The practical takeaway: getting on the right playlists matters more than what th
 ### Spotify Playlists Have the Strongest Impact on Streams
 ![Playlist Impact](plots/playlist_impact_comparison.png)
 
+Spotify placements drive nearly twice the streaming impact of Apple Music, and Deezer shows a negative relationship — making Spotify editorial placement the clearest lever a label can pull.
+
 ### Songs Group into Distinct Performance Tiers by Playlist Exposure
 ![Clustering](plots/playlist_clustering.png)
+
+K-means clustering separates tracks into four tiers based on playlist presence and stream volume. The majority cluster at low visibility — a small number break far ahead.
 
 ### Top Artists Score Higher on Danceability and Energy
 ![Audio Features](plots/artist_tier_audio_features.png)
 
+Top artists outperform on both audio features, but the difference is small and these features don't predict success across the broader dataset — they're a trait of already-successful artists, not a cause.
+
 ### Song Performance Mix Changes Across Release Seasons
 ![Seasonal Performance](plots/seasonal_performance_distribution.png)
+
+Winter releases show the highest concentration of top-tier performers — fall and winter together account for a disproportionate share of breakout songs.
 
 ### Model Captures Overall Streaming Trends
 ![Actual vs Predicted](plots/actual_vs_predicted_streams.png)
 
+Predicted values track actual streams closely across most of the range, with the largest variance at the extreme high end — viral outliers follow patterns the model doesn't fully capture.
+
 ### Audio Features Show Weak Relationship with Streaming Performance
 ![Audio Correlation](plots/audio_feature_correlation.png)
+
+All audio features show near-zero correlation with streams, confirming that sonic characteristics alone don't explain why songs perform well.
+
+### Clusters Show Clear Separation in Reduced Feature Space
+![PCA](plots/pca_clusters.png)
+
+PCA visualization confirms the four clusters are genuinely distinct — not an artifact of the algorithm.
 
 ---
 
