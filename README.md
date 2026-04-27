@@ -1,4 +1,4 @@
-# Playlist Placement Beats Talent
+# It's Not the Product. It's the Placement.
 **Multiple Linear Regression · K-Means Clustering · PCA · 952 Songs**
 
 ---
