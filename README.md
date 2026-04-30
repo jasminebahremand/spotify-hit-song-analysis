@@ -14,10 +14,10 @@ Built a full pipeline from raw CSV to regression, clustering, and hypothesis tes
 --- 
 
 ## Key Findings
-- **Playlist placement explained 46.4% of variance in streams (R²=0.464)** — distribution is the lever, not the music itself
-- **Spotify placements had the largest effect** (β=0.565) vs Apple Music (β=0.294) — Deezer showed a negative relationship (β=−0.171)
-- **Audio features do not predict streaming success** — danceability showed a slight negative correlation (r=−0.11) and top artists did not consistently outscore others
-- **Release season is significantly associated with performance tier** — winter releases showed the highest concentration of top-performing songs (χ²=55.40, p<.001)
+- **Playlist placement was the strongest driver of streaming performance**, explaining 46.4% of variation in streams (R² = 0.464)
+- **Spotify playlists had the largest impact** (β = 0.565), followed by Apple Music (β = 0.294), while Deezer showed a negative relationship (β = −0.171)
+- **Audio features were not strong predictors of performance**, showing weak and inconsistent relationships with streams
+- **Release timing matters** — winter releases were most likely to reach the top performance tier (χ² = 55.40, p < .001)
 
 ---
 
