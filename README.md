@@ -10,7 +10,7 @@ Built a full pipeline from raw CSV to regression, clustering, and hypothesis tes
 
 > Full write-up: https://jasminebahremand.my.canva.site/
 
----
+--- 
 
 ## Key Findings
 - **Playlist placement explained 46.4% of variance in streams (R²=0.464)** — distribution is the lever, not the music itself
