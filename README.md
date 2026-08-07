@@ -1,19 +1,21 @@
-
 # What Actually Drives Streaming Performance?
+
 **Multiple Linear Regression · K-Means Clustering · PCA · 952 Songs**
 
 ---
 
 ## Overview
+
 Playlist placement, audio features, release timing — which actually predicts whether a song performs? This project analyzed Spotify's top songs of 2023 to find out, testing variables across Spotify, Apple Music, and Deezer.
 
 Built a full pipeline from raw CSV to regression, clustering, and hypothesis testing.
 
 > Full write-up: https://jasminebahremand.my.canva.site/
 
---- 
+---
 
 ## Key Findings
+
 - **Playlist placement was the strongest driver of streaming performance**, explaining 46.4% of variation in streams (R² = 0.464)
 - **Spotify playlists had the largest impact** (β = 0.565), followed by Apple Music (β = 0.294), while Deezer showed a negative relationship (β = −0.171)
 - **Audio features were not strong predictors of performance**, showing weak and inconsistent relationships with streams
@@ -42,6 +44,7 @@ All audio features show weak to negative correlations with streams — what a so
 ---
 
 ## Methods
+
 - Exploratory Data Analysis
 - Multiple Linear Regression with standardized coefficients for platform comparison
 - T-tests comparing top vs non-top artist audio feature scores
@@ -52,26 +55,33 @@ All audio features show weak to negative correlations with streams — what a so
 ---
 
 ## Tech Stack
+
 Python · Pandas · Statsmodels · SciPy · Scikit-learn · Matplotlib · Seaborn
 
 ---
 
 ## How to Run
+
 ```bash
 pip install -r requirements.txt
-jupyter notebook spotify-hit-song-analysis.ipynb
+jupyter notebook spotify_hit_song_analysis.ipynb
 ```
+
+The dataset is included in the `data/` folder, so the notebook runs as-is — no extra setup needed.
 
 ---
 
 ## Data
+
 **Top Spotify Songs 2023:** https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023
 
-> Dataset not included in this repo due to size. Download from Kaggle and place the CSV in a folder called `spotify` in your Google Drive.
+The CSV is included in the `data/` folder of this repo, so the notebook runs without any download. (Original source: Kaggle, linked above.)
 
 ---
 
 ## Files
-- `spotify-hit-song-analysis.ipynb` — full analysis notebook
+
+- `spotify_hit_song_analysis.ipynb` — full analysis notebook
+- `data/` — Spotify 2023 dataset (CSV)
 - `requirements.txt` — dependencies
 - `plots/` — generated visualizations
