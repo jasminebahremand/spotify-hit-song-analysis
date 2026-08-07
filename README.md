@@ -67,7 +67,7 @@ pip install -r requirements.txt
 jupyter notebook spotify_hit_song_analysis.ipynb
 ```
 
-The dataset is included in the `data/` folder, so the notebook runs as-is — no extra setup needed.
+The dataset (`spotify-2023.csv`) is included in this repo, so the notebook runs as-is — no extra setup needed.
 
 ---
 
@@ -75,13 +75,13 @@ The dataset is included in the `data/` folder, so the notebook runs as-is — no
 
 **Top Spotify Songs 2023:** https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023
 
-The CSV is included in the `data/` folder of this repo, so the notebook runs without any download. (Original source: Kaggle, linked above.)
+The CSV (`spotify-2023.csv`) is included in this repo, so the notebook runs without any download. (Original source: Kaggle, linked above.)
 
 ---
 
 ## Files
 
 - `spotify_hit_song_analysis.ipynb` — full analysis notebook
-- `data/` — Spotify 2023 dataset (CSV)
+- `spotify-2023.csv` — Spotify 2023 dataset
 - `requirements.txt` — dependencies
 - `plots/` — generated visualizations
