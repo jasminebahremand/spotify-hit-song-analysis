@@ -17,13 +17,16 @@ Full write-up: https://jasminebahremand.my.canva.site/
 
 ## Key Visuals
 
-**Spotify Playlists Show the Strongest Link to Streams**
+### Spotify Playlists Show the Strongest Link to Streams
+![Spotify Playlists Show the Strongest Link to Streams](plots/playlist_impact_comparison.png)
 Standardized effect of each platform's playlists. Spotify dominates; Apple's effect isn't statistically significant and Deezer's is small, so playlist impact is really a Spotify story.
 
-**Winter Releases Are Most Likely to Be Top-Tier Hits**
+### Winter Releases Are Most Likely to Be Top-Tier Hits
+![Winter Releases Are Most Likely to Be Top-Tier Hits](plots/seasonal_performance_distribution.png)
 Share of each season's songs that reach the top tier. Winter and Fall lead (30.5% and 26.3%) over Spring and Summer (~21%), though the seasonal effect is modest (Cramér's V = 0.14).
 
-**More Playlist Exposure Tracks Higher Streams**
+### More Playlist Exposure Tracks Higher Streams
+![More Playlist Exposure Tracks Higher Streams](plots/playlist_clustering.png)
 K-means segments songs by playlist footprint into four tiers (named by stream volume); PCA shows they blend along a continuum rather than forming sharply separated clusters.
 
 ## Methods
@@ -47,8 +50,11 @@ Python · Pandas · Statsmodels · SciPy · Scikit-learn · Matplotlib · Seabor
 
 ## How to Run
 
-Locally:pip install -r requirements.txt
+Locally:
+
+pip install -r requirements.txt
 jupyter notebook spotify_hit_song_analysis.ipynb
+​
 
 Or in Google Colab: open the notebook and run all cells — no setup needed. The notebook loads the dataset straight from this repo, so it works whether you run it locally or in the cloud.
 
