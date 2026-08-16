@@ -63,9 +63,10 @@ Python · Pandas · Statsmodels · SciPy · Scikit-learn · Matplotlib · Seabor
 
 Locally:
 
+```
 pip install -r requirements.txt
 jupyter notebook spotify_hit_song_analysis.ipynb
-​
+```
 
 Or in Google Colab: open the notebook and run all cells — no setup needed. The notebook loads the dataset straight from this repo, so it works whether you run it locally or in the cloud.
 
