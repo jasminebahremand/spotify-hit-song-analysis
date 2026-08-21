@@ -55,3 +55,17 @@ Python · Pandas · Statsmodels · SciPy · Scikit-learn · Matplotlib · Seabor
 
 ## How to Run
 Locally:
+pip install -r requirements.txt
+jupyter notebook spotify_hit_song_analysis.ipynb
+
+Or in Google Colab: open the notebook and run all cells — no setup needed. The notebook loads the dataset straight from this repo, so it works whether you run it locally or in the cloud.
+
+## Data
+Top Spotify Songs 2023: https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023
+The CSV (spotify-2023.csv) is included in this repo and loaded automatically by the notebook, so there's no separate download from Kaggle. (Original source: Kaggle, linked above.)
+
+## Files
+- `spotify_hit_song_analysis.ipynb` — full analysis notebook
+- `spotify-2023.csv` — Spotify 2023 dataset
+- `requirements.txt` — dependencies
+- `plots/` — generated visualizations
