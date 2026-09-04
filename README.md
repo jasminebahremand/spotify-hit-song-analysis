@@ -11,30 +11,35 @@ Full write-up: https://jasminebahremand.my.canva.site/
 - **The model validates out-of-sample** — a held-out test set gave R² = 0.60 vs. 0.63 in training, so it predicts unseen songs about as well, confirming a real pattern rather than overfitting.
 - **It's overwhelmingly a Spotify story.** Standardized effects: Spotify β = 0.66 (dominant, significant), Deezer β = 0.11 (small, positive, significant), Apple Music β = 0.05 (not significant). Artist fame appears to work *through* playlist placement rather than on top of it.
 - **A song's sound barely predicts performance.** Only speechiness holds up as a reliable signal — robust across multiple cutoffs and even in a combined model with playlists (p = 0.002) — while every other audio feature, including danceability, fails to hold. Adding all audio features to the playlist model raises R² by just 0.005.
-- **Release timing has a weak effect** (χ² = 55.40, p < .001, Cramér's V = 0.14). Winter releases over-index the top tier (30.5% vs ~21% in spring), but the association is driven mostly by the *bottom* tier — Fall avoids it while Spring and Summer over-index it.
+- **Release timing has a weak effect** (χ² = 55.40, p < .001, Cramér's V = 0.14). Winter releases over-index the top tier (30.5% vs ~21% in spring), but the association is driven mainly by Fall (avoiding the bottom tier, skewing toward mid-upper) and by Spring/Summer over-indexing the bottom tier.
 - **Playlist exposure is highly concentrated.** Songs split into a large low-exposure majority (~93%) and a small high-exposure group (~7%) that streams far more.
 
 **Bottom line:** streaming success is driven far more by *where a song is distributed* than by *what it sounds like*.
 
 ## Key Visuals
+
 ### Spotify Playlists Show the Strongest Link to Streams
 ![Spotify Playlists Show the Strongest Link to Streams](plots/playlist_impact_comparison.png)
 Standardized effect of each platform's playlists. Spotify dominates; Apple's effect isn't statistically significant and Deezer's is small, so playlist impact is really a Spotify story.
 
+### The Model Predicts Streams Fairly Accurately
+![The Model Predicts Streams Fairly Accurately](plots/actual_vs_predicted_streams.png)
+Actual vs. predicted streams for each song, on a log scale. Dots hug the diagonal, confirming the log-log regression fits well — it explains about 62.5% of why songs differ in streams.
+
 ### Winter Releases Are Most Likely to Be Top-Tier Hits
 ![Winter Releases Are Most Likely to Be Top-Tier Hits](plots/seasonal_performance_distribution.png)
-Share of each season's songs that reach the top tier. Winter and Fall lead (30.5% and 26.3%) over Spring and Summer (~21%), though the seasonal effect is modest (Cramér's V = 0.14).
+Share of each season's songs that reach the top tier. Winter and Fall lead (30.5% and 26.3%) over Spring and Summer (21% and 22%), though the seasonal effect is modest (Cramér's V = 0.14).
 
 ### Songs Split Into a Low-Exposure Majority and a High-Exposure Few
 ![Songs Split Into a Low-Exposure Majority and a High-Exposure Few](plots/playlist_clustering.png)
-K-means (k=2, chosen by silhouette score) groups songs by playlist footprint into a large low-exposure majority (~93%) and a small high-exposure group (~7%) that streams far more — playlist exposure is highly concentrated.
+K-means (k=2, chosen via silhouette and elbow diagnostics) groups songs by playlist footprint into a large low-exposure majority (~93%) and a small high-exposure group (~7%) that streams far more — playlist exposure is highly concentrated.
 
 ## Methods
 - Exploratory data analysis and cleaning (type conversion, missing-value handling, log transforms for right-skewed variables)
 - Multiple linear regression (log-log) with robust standard errors (HC3), VIF checks for multicollinearity, and standardized coefficients for fair platform comparison
 - Robustness checks: re-ran the model controlling for song age, artist prominence, and collaboration
 - Out-of-sample validation: 80/20 train/test split confirming the model generalizes (test R² = 0.60 vs. 0.63 train)
-- Audio features: Welch's t-tests (top-tier vs rest) with a Bonferroni correction and Cohen's d effect sizes; a threshold-sensitivity check across multiple cutoffs; and a combined model testing whether audio adds anything beyond playlist placement
+- Audio features: Welch's t-tests (top-tier vs rest) with a Bonferroni correction and Cohen's d effect sizes; a logistic regression to test whether effects hold when all features are considered together; a threshold-sensitivity check across multiple cutoffs; and a combined model testing whether audio adds anything beyond playlist placement
 - Chi-square test with Cramér's V and standardized residuals for release season vs performance tier
 - K-Means clustering (k=2, chosen via silhouette and elbow diagnostics) with PCA for visualization
 
@@ -51,7 +56,7 @@ K-means (k=2, chosen by silhouette score) groups songs by playlist footprint int
 - Cluster standard errors by artist to account for repeated artists — the main remaining refinement, since the model already validates on a held-out test set.
 
 ## Tech Stack
-Python · Pandas · Statsmodels · SciPy · Scikit-learn · Matplotlib · Seaborn
+Python · Pandas · NumPy · Statsmodels · SciPy · Scikit-learn · Matplotlib · Seaborn
 
 ## How to Run
 Locally:
